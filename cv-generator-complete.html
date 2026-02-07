@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.K. CV Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cv-company-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+
+        .company-name-main {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 22px;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .company-main-details {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .resume-box {
+            width: fit-content;
+            margin: 10px auto 20px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+            border: 1px solid #000;
+            padding: 4px 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            min-width: 280px;
+            text-align: left;
+            margin: 0;
+            padding-right: 10px;
+            white-space: nowrap;
+        }
+
+        .form-group input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+            padding: 2px 4px;
+            background: transparent;
+        }
+
+        .experience-section {
+            margin: 20px 0;
+        }
+
+        .experience-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .experience-item input {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        /* CV Preview Styles */
+        .cv-row {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-start;
+            page-break-inside: avoid;
+        }
+
+        .cv-label {
+            min-width: 280px;
+            text-align: left;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        .cv-value {
+            flex: 1;
+            text-align: left;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        .cv-value::before {
+            content: ': ';
+        }
+
+        .cv-section-title {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            page-break-after: avoid;
+        }
+
+        .cv-experience-list {
+            margin-left: 30px;
+            padding-left: 0;
+        }
+
+        .cv-experience-item {
+            margin-bottom: 8px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: left;
+            list-style-type: disc;
+            margin-left: 20px;
+            page-break-inside: avoid;
+        }
+
+        input[type="date"] {
+            text-transform: uppercase;
+        }
+
+        #cvPreview {
+            padding: 40px;
+            background: white;
+            min-height: 800px;
+        }
+
+        /* PDF specific styles */
+        @media print {
+            .cv-company-header {
+                page-break-after: avoid;
+            }
+            .cv-row {
+                page-break-inside: avoid;
+            }
+
+            #cvPreview {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cv-company-header">
+            <div class="company-name-main">J.K. OVERSEAS PVT. LTD.</div>
+            <div class="company-main-details">
+                Govt.Regd.No.1720/081/082, Ward No. 04, Sukedhara, Kathmandu, Nepal.<br>
+                Tel: (+977) 01 – 4548016, Email: jkoverseasoffice@gmail.com
+            </div>
+        </div>
+
+        <div class="resume-box">RESUME</div>
+
+        <div class="form-group">
+            <label>POSITION APPLIED FOR</label>
+            <input type="text" id="position" placeholder="STOREKEEPER">
+        </div>
+
+        <div class="form-group">
+            <label>FULL NAME</label>
+            <input type="text" id="fullName" placeholder="MAN BAHADUR SHRESTHA">
+        </div>
+
+        <div class="form-group">
+            <label>PLACE OF BIRTH</label>
+            <input type="text" id="birthPlace" placeholder="KATHMANDU">
+        </div>
+
+        <div class="form-group">
+            <label>DATE OF BIRTH</label>
+            <input type="date" id="birthDate">
+        </div>
+
+        <div class="form-group">
+            <label>AGE</label>
+            <input type="number" id="age" placeholder="35">
+        </div>
+
+        <div class="form-group">
+            <label>HEIGHT</label>
+            <input type="text" id="height" placeholder="5'4&quot;">
+        </div>
+
+        <div class="form-group">
+            <label>WEIGHT</label>
+            <input type="text" id="weight" placeholder="66 KG">
+        </div>
+
+        <div class="form-group">
+            <label>MARITAL STATUS</label>
+            <input type="text" id="maritalStatus" placeholder="MARRIED">
+        </div>
+
+        <div class="form-group">
+            <label>PERMANENT ADDRESS</label>
+            <input type="text" id="address" placeholder="SUNKOSHI-4, NEPAL">
+        </div>
+
+        <div class="form-group">
+            <label>PASSPORT NUMBER</label>
+            <input type="text" id="passportNo" placeholder="PA4745990">
+        </div>
+
+        <div class="form-group">
+            <label>PLACE OF ISSUE</label>
+            <input type="text" id="placeOfIssue" placeholder="KATHMANDU">
+        </div>
+
+        <div class="form-group">
+            <label>DATE OF ISSUE</label>
+            <input type="date" id="issueDate">
+        </div>
+
+        <div class="form-group">
+            <label>VALID UNTIL</label>
+            <input type="date" id="validUntil">
+        </div>
+
+        <div class="form-group">
+            <label>LANGUAGES KNOWN</label>
+            <input type="text" id="languages" placeholder="BASIC ENGLISH, HINDI & NEPALI">
+        </div>
+
+        <div class="form-group">
+            <label>NATIONALITY</label>
+            <input type="text" id="nationality" value="NEPALESE" placeholder="NEPALESE">
+        </div>
+
+        <div class="form-group">
+            <label>QUALIFICATION</label>
+            <input type="text" id="qualification" placeholder="LOWER SECONDARY LEVEL">
+        </div>
+
+        <div class="experience-section">
+            <label style="font-size: 14px; margin-bottom: 15px; display: block;">WORK EXPERIENCE</label>
+            <div id="experienceContainer"></div>
+            <button class="btn btn-secondary" onclick="addExperience()">+ Add Experience</button>
+        </div>
+
+        <div class="form-group" style="margin-top: 30px;">
+            <label>PREVIOUS VISIT TO GCC COUNTRIES</label>
+            <input type="text" id="gccVisits" placeholder="SAUDI, QATAR, UAE">
+        </div>
+
+        <div class="form-group">
+            <label>SALARY EXPECTED</label>
+            <input type="text" id="salary" value="NEGOTIABLE" placeholder="NEGOTIABLE">
+        </div>
+
+        <div class="form-group">
+            <label>REMARKS</label>
+            <input type="text" id="remarks" value="GOOD APPLICANT" placeholder="GOOD APPLICANT">
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="if (validateForm()) { generateCV(); openPreview(); }">
+            Preview CV
+        </button>
+    </div>
+        
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+                <strong>Preview</strong>
+                <div>
+                    <button class="btn btn-primary" onclick="downloadCV()">Download PDF</button>
+                    <button class="btn btn-secondary" onclick="closePreview()">✕</button>
+                </div>
+            </div>
+            <div id="cvPreview"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        let experienceCount = 0;
+
+        function addExperience() {
+            experienceCount++;
+            const container = document.getElementById('experienceContainer');
+            const experienceItem = document.createElement('div');
+            experienceItem.className = 'experience-item';
+            experienceItem.id = `experience-${experienceCount}`;
+            experienceItem.innerHTML = `
+                <input type="text" placeholder="Position (e.g., FABRICATOR CUM WELDER)" id="exp-position-${experienceCount}">
+                <input type="text" placeholder="Company (e.g., AL JOUF)" id="exp-company-${experienceCount}">
+                <input type="text" placeholder="Duration (e.g., 3.5 YEAR)" id="exp-duration-${experienceCount}">
+                <input type="text" placeholder="Period (e.g., 05/01/2021 TO 20/07/2025)" id="exp-period-${experienceCount}">
+                <input type="text" placeholder="Location (e.g., SAUDI ARABIA)" id="exp-location-${experienceCount}">
+                <button class="btn btn-remove" onclick="removeExperience(${experienceCount})">Remove</button>
+            `;
+            container.appendChild(experienceItem);
+        }
+
+        function removeExperience(id) {
+            const element = document.getElementById(`experience-${id}`);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${day}.${month}.${year}`;
+        }
+
+        function validateForm() {
+            const required = ['position', 'fullName', 'passportNo'];
+            for (let id of required) {
+                if (!document.getElementById(id).value.trim()) {
+                    alert('Please fill all required fields (Position, Full Name, Passport Number)');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function generateCV() {
+            const position = document.getElementById('position').value || '';
+            const fullName = document.getElementById('fullName').value || '';
+            const birthPlace = document.getElementById('birthPlace').value || '';
+            const birthDate = formatDate(document.getElementById('birthDate').value);
+            const age = document.getElementById('age').value || '';
+            const height = document.getElementById('height').value || '';
+            const weight = document.getElementById('weight').value || '';
+            const maritalStatus = document.getElementById('maritalStatus').value || '';
+            const address = document.getElementById('address').value || '';
+            const passportNo = document.getElementById('passportNo').value || '';
+            const placeOfIssue = document.getElementById('placeOfIssue').value || '';
+            const issueDate = formatDate(document.getElementById('issueDate').value);
+            const validUntil = formatDate(document.getElementById('validUntil').value);
+            const languages = document.getElementById('languages').value || '';
+            const nationality = document.getElementById('nationality').value || '';
+            const qualification = document.getElementById('qualification').value || '';
+            const gccVisits = document.getElementById('gccVisits').value || '';
+            const salary = document.getElementById('salary').value || '';
+            const remarks = document.getElementById('remarks').value || '';
+
+            let experienceHTML = '';
+            const experienceItems = document.querySelectorAll('.experience-item');
+            experienceItems.forEach((item, index) => {
+                const id = item.id.split('-')[1];
+                const expPosition = document.getElementById(`exp-position-${id}`)?.value || '';
+                const expCompany = document.getElementById(`exp-company-${id}`)?.value || '';
+                const expDuration = document.getElementById(`exp-duration-${id}`)?.value || '';
+                const expPeriod = document.getElementById(`exp-period-${id}`)?.value || '';
+                const expLocation = document.getElementById(`exp-location-${id}`)?.value || '';
+
+                if (expPosition || expCompany) {
+                    let expText = `WORKED AS A ${expPosition}`;
+                    if (expCompany) expText += ` AT ${expCompany}`;
+                    if (expDuration) expText += ` FOR ${expDuration}`;
+                    if (expPeriod) expText += ` SINCE ${expPeriod}`;
+                    if (expLocation) expText += ` IN ${expLocation}`;
+                    expText += '.';
+                    experienceHTML += `<li class="cv-experience-item">${expText}</li>`;
+                }
+            });
+
+            const cvHTML = `
+                <div class="cv-company-header">
+                    <div class="company-name-main">J.K. OVERSEAS PVT. LTD.</div>
+                    <div class="company-main-details">
+                        Govt.Regd.No.1720/081/082, Ward No. 04, Sukedhara, Kathmandu, Nepal.<br>
+                        Tel: (+977) 01 – 4548016, Email: jkoverseasoffice@gmail.com
+                    </div>
+                </div>
+
+                <div class="resume-box">RESUME</div>
+
+                <div class="cv-row">
+                    <div class="cv-label">POSITION APPLIED FOR</div>
+                    <div class="cv-value">${position}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">NAME IN FULL</div>
+                    <div class="cv-value">${fullName}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">PLACE OF BIRTH</div>
+                    <div class="cv-value">${birthPlace}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">DATE OF BIRTH</div>
+                    <div class="cv-value">${birthDate}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">AGE</div>
+                    <div class="cv-value">${age}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">HEIGHT</div>
+                    <div class="cv-value">${height}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">WEIGHT</div>
+                    <div class="cv-value">${weight}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">MARITAL STATUS</div>
+                    <div class="cv-value">${maritalStatus}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">PERMANENT ADDRESS</div>
+                    <div class="cv-value">${address}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">PASSPORT NUMBER</div>
+                    <div class="cv-value">${passportNo}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">PLACE OF ISSUE</div>
+                    <div class="cv-value">${placeOfIssue}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">DATE OF ISSUE</div>
+                    <div class="cv-value">${issueDate}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">VALID UNTIL</div>
+                    <div class="cv-value">${validUntil}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">LANGUAGES KNOWN</div>
+                    <div class="cv-value">${languages}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">NATIONALITY</div>
+                    <div class="cv-value">${nationality}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">QUALIFICATION</div>
+                    <div class="cv-value">${qualification}</div>
+                </div>
+
+                ${experienceHTML ? `
+                    <div class="cv-section-title">EXPERIENCE:</div>
+                    <ul class="cv-experience-list">
+                        ${experienceHTML}
+                    </ul>
+                ` : ''}
+
+                <div class="cv-row" style="margin-top: 20px;">
+                    <div class="cv-label">PREVIOUS VISIT TO<br>GCC COUNTRIES</div>
+                    <div class="cv-value">${gccVisits}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">SALARY EXPECTED</div>
+                    <div class="cv-value">${salary}</div>
+                </div>
+                <div class="cv-row">
+                    <div class="cv-label">REMARKS</div>
+                    <div class="cv-value">${remarks}</div>
+                </div>
+            `;
+
+            document.getElementById('cvPreview').innerHTML = cvHTML;
+        }
+
+        function openPreview() {
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        // function downloadCV() {
+        //     const source = document.getElementById('cvPreview');
+
+        //     if (!source || !source.innerHTML.trim()) {
+        //         alert('Please generate the CV before downloading.');
+        //         return;
+        //     }
+
+        //     // Create a clean clone for PDF generation
+        //     const clone = source.cloneNode(true);
+            
+        //     // Apply PDF-optimized styles
+        //     clone.style.width = '210mm';
+        //     clone.style.minHeight = 'auto';
+        //     clone.style.height = 'auto';
+        //     clone.style.padding = '15mm';
+        //     clone.style.margin = '0';
+        //     clone.style.background = '#ffffff';
+        //     clone.style.position = 'absolute';
+        //     clone.style.left = '-9999px';
+        //     clone.style.boxSizing = 'border-box';
+
+        //     document.body.appendChild(clone);
+
+        //     const opt = {
+        //         margin: [10, 10, 10, 10],
+        //         filename: 'Resume.pdf',
+        //         image: { type: 'jpeg', quality: 0.98 },
+        //         html2canvas: {
+        //             scale: 3,
+        //             useCORS: true,
+        //             backgroundColor: '#ffffff',
+        //             scrollY: 0,
+        //             scrollX: 0,
+        //             windowWidth: 794,
+        //             windowHeight: 1123
+        //         },
+        //         jsPDF: {
+        //             unit: 'mm',
+        //             format: 'a4',
+        //             orientation: 'portrait',
+        //             compress: true
+        //         },
+        //         pagebreak: {
+        //             mode: ['avoid-all', 'css', 'legacy'],
+        //             before: '.cv-company-header',
+        //             after: '.cv-section-title'
+        //         }
+        //     };
+
+        //     // Wait for fonts and layout to settle
+        //     setTimeout(() => {
+        //         html2pdf()
+        //             .set(opt)
+        //             .from(clone)
+        //             .save()
+        //             .then(() => {
+        //                 clone.remove();
+        //             })
+        //             .catch(error => {
+        //                 console.error('PDF generation error:', error);
+        //                 clone.remove();
+        //                 alert('Error generating PDF. Please try again.');
+        //             });
+        //     }, 500);
+        // }
+        function downloadCV() {
+    const source = document.getElementById('cvPreview');
+
+    if (!source || !source.innerHTML.trim()) {
+        alert('Please generate the CV before downloading.');
+        return;
+    }
+
+    // Clone outside modal
+    const clone = source.cloneNode(true);
+
+    clone.style.width = '210mm';          // A4 width
+    clone.style.minHeight = 'auto';       // ❗ IMPORTANT
+    clone.style.height = 'auto';
+    clone.style.padding = '0';
+    clone.style.margin = '0';
+    clone.style.background = '#ffffff';
+    clone.style.position = 'static';
+    clone.style.boxSizing = 'border-box';
+
+    document.body.appendChild(clone);
+
+    const opt = {
+        margin: [15, 15, 15, 15],          // TOP, LEFT, BOTTOM, RIGHT (mm)
+        filename: 'Resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            scrollY: 0                     // 🔑 prevents vertical offset
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        },
+        pagebreak: {
+            mode: ['avoid-all', 'css']
+        }
+    };
+
+    // Wait for fonts and layout to settle
+    document.fonts.ready.then(() => {
+        html2pdf()
+            .set(opt)
+            .from(clone)
+            .save()
+            .then(() => clone.remove());
+    });
+}
+
+        window.addEventListener('load', () => {
+            addExperience();
+        });
+    </script>
+</body>
+</html>
