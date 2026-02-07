@@ -483,35 +483,51 @@
 
 
         function generateCV() {
-            const position = document.getElementById('position').value || '';
-            const fullName = document.getElementById('fullName').value || '';
-            const birthPlace = document.getElementById('birthPlace').value || '';
+
+            const upper = (id) => (document.getElementById(id)?.value || '').toUpperCase();
+
+            // const position = document.getElementById('position').value || '';
+            // const fullName = document.getElementById('fullName').value || '';
+            // const birthPlace = document.getElementById('birthPlace').value || '';
             const birthDate = formatDate(document.getElementById('birthDate').value);
             const age = document.getElementById('age').value || '';
             const height = document.getElementById('height').value || '';
             const weight = document.getElementById('weight').value || '';
-            const maritalStatus = document.getElementById('maritalStatus').value || '';
-            const address = document.getElementById('address').value || '';
-            const passportNo = document.getElementById('passportNo').value || '';
-            const placeOfIssue = document.getElementById('placeOfIssue').value || '';
+            // const maritalStatus = document.getElementById('maritalStatus').value || '';
+            // const address = document.getElementById('address').value || '';
+            // const passportNo = document.getElementById('passportNo').value || '';
+            // const placeOfIssue = document.getElementById('placeOfIssue').value || '';
             const issueDate = formatDate(document.getElementById('issueDate').value);
             const validUntil = formatDate(document.getElementById('validUntil').value);
-            const languages = document.getElementById('languages').value || '';
-            const nationality = document.getElementById('nationality').value || '';
+            // const languages = document.getElementById('languages').value || '';
+            // const nationality = document.getElementById('nationality').value || '';
             const qualification = document.getElementById('qualification').value || '';
-            const gccVisits = document.getElementById('gccVisits').value || '';
+            // const gccVisits = document.getElementById('gccVisits').value || '';
             const salary = document.getElementById('salary').value || '';
             const remarks = document.getElementById('remarks').value || '';
+            
+
+            const position = upper('position');
+            const fullName = upper('fullName');
+            const birthPlace = upper('birthPlace');
+            const maritalStatus = upper('maritalStatus');
+            const passportNo = upper('passportNo');
+            const address = upper('address');
+            const placeOfIssue = upper('placeOfIssue');
+            const languages = upper('languages');
+            const nationality = upper('nationality');
+            const gccVisits = upper('gccVisits');
+
 
             let experienceHTML = '';
             const experienceItems = document.querySelectorAll('.experience-item');
             experienceItems.forEach((item, index) => {
                 const id = item.id.split('-')[1];
-                const expPosition = document.getElementById(`exp-position-${id}`)?.value || '';
-                const expCompany = document.getElementById(`exp-company-${id}`)?.value || '';
-                const expDuration = document.getElementById(`exp-duration-${id}`)?.value || '';
-                const expPeriod = document.getElementById(`exp-period-${id}`)?.value || '';
-                const expLocation = document.getElementById(`exp-location-${id}`)?.value || '';
+                const expPosition = (document.getElementById(`exp-position-${id}`)?.value || '').toUpperCase();
+                const expCompany = (document.getElementById(`exp-company-${id}`)?.value || '').toUpperCase();
+                const expDuration = (document.getElementById(`exp-duration-${id}`)?.value || '').toUpperCase();
+                const expPeriod = (document.getElementById(`exp-period-${id}`)?.value || '').toUpperCase();
+                const expLocation = (document.getElementById(`exp-location-${id}`)?.value || '').toUpperCase();
 
                 if (expPosition || expCompany) {
                     let expText = `WORKED AS A ${expPosition}`;
@@ -657,17 +673,20 @@
             const opt = {
                 margin: [15, 15, 15, 15],          // TOP, LEFT, BOTTOM, RIGHT (mm)
                 filename: getCVFileName(),
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'jpeg', quality: 0.7 },
                 html2canvas: {
-                    scale: 2,
+                    scale: 3,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    scrollY: 0                     // 🔑 prevents vertical offset
+                    scrollY: 0,                   // 🔑 prevents vertical offset
+                    width: 794,   // A4 width @ 96 DPI
+                    height: 1123  // A4 height @ 96 DPI
                 },
                 jsPDF: {
                     unit: 'mm',
                     format: 'a4',
-                    orientation: 'portrait'
+                    orientation: 'portrait',
+                    // compress: false
                 },
                 pagebreak: {
                     mode: ['avoid-all', 'css']
