@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.K. CV Generator</title>
+    <title>J.K. RESUME</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -264,7 +264,7 @@
 
         <div class="form-group">
             <label>FULL NAME</label>
-            <input type="text" id="fullName" placeholder="MAN BAHADUR SHRESTHA">
+            <input type="text" id="fullName" placeholder="Full Name">
         </div>
 
         <div class="form-group">
@@ -279,7 +279,7 @@
 
         <div class="form-group">
             <label>AGE</label>
-            <input type="number" id="age" placeholder="35">
+            <input type="number" id="age" placeholder="35" readonly>
         </div>
 
         <div class="form-group">
@@ -324,7 +324,7 @@
 
         <div class="form-group">
             <label>LANGUAGES KNOWN</label>
-            <input type="text" id="languages" placeholder="BASIC ENGLISH, HINDI & NEPALI">
+            <input type="text" id="languages" value="BASIC ENGLISH, HINDI & NEPALI">
         </div>
 
         <div class="form-group">
@@ -334,7 +334,7 @@
 
         <div class="form-group">
             <label>QUALIFICATION</label>
-            <input type="text" id="qualification" placeholder="LOWER SECONDARY LEVEL">
+            <input type="text" id="qualification" value="LOWER SECONDARY LEVEL" placeholder="LOWER SECONDARY LEVEL">
         </div>
 
         <div class="experience-section">
@@ -345,7 +345,7 @@
 
         <div class="form-group" style="margin-top: 30px;">
             <label>PREVIOUS VISIT TO GCC COUNTRIES</label>
-            <input type="text" id="gccVisits" placeholder="SAUDI, QATAR, UAE">
+            <input type="text" id="gccVisits" VALUE = NONE placeholder="SAUDI, QATAR, UAE">
         </div>
 
         <div class="form-group">
@@ -379,6 +379,44 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         let experienceCount = 0;
+
+        document.getElementById('birthDate').addEventListener('change', function () {
+            const birthDate = new Date(this.value);
+            if (isNaN(birthDate)) return;
+
+            const today = new Date();
+            console.log(today);
+            let age = today.getFullYear() - birthDate.getFullYear();
+
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            const dayDiff = today.getDate() - birthDate.getDate();
+
+            // If birthday hasn't happened yet this year, subtract 1
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                age--;
+            }
+
+            document.getElementById('age').value = age;
+        });
+
+        document.getElementById('issueDate').addEventListener('change', function () {
+            const issueDate = new Date(this.value);
+            if (isNaN(issueDate)) return;
+
+            // Add 10 years
+            const expiryDate = new Date(issueDate);
+            expiryDate.setFullYear(expiryDate.getFullYear() + 10);
+
+            // Subtract 1 day
+            expiryDate.setDate(expiryDate.getDate() - 1);
+
+            // Format as YYYY-MM-DD for input[type="date"]
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+
+            document.getElementById('validUntil').value = `${yyyy}-${mm}-${dd}`;
+        });
 
         function addExperience() {
             experienceCount++;
